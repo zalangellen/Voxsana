@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoxSana</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--off:#f7f9f8;--surface:#eff4f1;
+  --g900:#0b2118;--g800:#163a27;--g700:#1e5236;--g600:#286444;
+  --g500:#327855;--g400:#4d9a70;--g300:#86c4a2;--g200:#c0dece;--g100:#e3f1ea;--g50:#f2f8f5;
+  --ink:#0d1f15;--ink2:#2a4035;--ink3:#587060;--ink4:#8aaa98;
+  --line:#dde8e2;--line2:#c6dbd3;
+  --red:#b83232;--red-bg:#fdf2f2;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --r:8px;--r2:12px;
+}
+html{-webkit-font-smoothing:antialiased}
+body{background:var(--off);color:var(--ink);font-family:var(--font);font-size:14px;font-weight:400;line-height:1.5;min-height:100vh}
+
+.hdr{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:27px;height:27px;background:var(--g800);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:13px;height:13px}
+.logo-text{font-family:var(--font);font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.logo-text span{color:var(--g600)}
+.hdr-badge{font-size:11px;font-weight:500;color:var(--g700);background:var(--g100);border:1px solid var(--g200);padding:3px 10px;border-radius:20px}
+
+.main{max-width:1040px;margin:0 auto;padding:36px 36px 80px}
+
+.steps{display:flex;align-items:center;margin-bottom:44px}
+.step{display:flex;align-items:center;gap:8px;cursor:default}
+.step-num{width:23px;height:23px;border-radius:50%;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--ink4);transition:all .2s;flex-shrink:0;font-family:var(--mono)}
+.step.active .step-num{background:var(--g800);border-color:var(--g800);color:#fff}
+.step.done .step-num{background:var(--g100);border-color:var(--g200);color:var(--g700)}
+.step-label{font-size:12px;font-weight:500;color:var(--ink4);transition:color .2s}
+.step.active .step-label{color:var(--ink)}
+.step.done .step-label{color:var(--ink3)}
+.step-line{flex:1;height:1px;background:var(--line);margin:0 10px;min-width:20px}
+
+.panel{display:none}
+.panel.active{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.panel-title{font-size:21px;font-weight:600;color:var(--ink);letter-spacing:-.4px;margin-bottom:5px}
+.panel-subtitle{font-size:14px;color:var(--ink4);margin-bottom:28px;max-width:540px;line-height:1.6;font-weight:300}
+
+.specialty-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:28px}
+.specialty-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:18px 16px;cursor:pointer;transition:all .15s}
+.specialty-card:hover{border-color:var(--g200);background:var(--g50)}
+.specialty-card.selected{border-color:var(--g600);background:var(--g50)}
+.specialty-icon{width:30px;height:30px;border-radius:7px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin-bottom:11px;transition:all .15s}
+.specialty-card.selected .specialty-icon{background:var(--g100);border-color:var(--g200)}
+.specialty-icon svg{width:14px;height:14px;stroke:var(--ink3);stroke-width:1.4;fill:none;transition:stroke .15s}
+.specialty-card.selected .specialty-icon svg{stroke:var(--g700)}
+.specialty-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.specialty-desc{font-size:11px;color:var(--ink4);line-height:1.4}
+
+.legal-notice{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;margin-bottom:18px;display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink2);line-height:1.5}
+.legal-notice svg{width:13px;height:13px;flex-shrink:0;margin-top:1px;stroke:var(--ink3);stroke-width:1.4;fill:none}
+.notice{background:var(--g50);border:1px solid var(--g200);border-radius:var(--r);padding:11px 14px;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink2);line-height:1.5}
+.notice svg{width:13px;height:13px;flex-shrink:0;margin-top:1px;stroke:var(--g600);stroke-width:1.4;fill:none}
+
+.dictation-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:16px}
+.rec-control{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:22px}
+.rec-control-title{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.rec-control-desc{font-size:12px;color:var(--ink4);margin-bottom:18px;line-height:1.5;font-weight:300}
+
+.rec-btn-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.rec-btn-main{width:54px;height:54px;border-radius:50%;border:1px solid var(--g200);background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.rec-btn-main:hover{background:var(--g100);border-color:var(--g300)}
+.rec-btn-main.rec{border-color:rgba(184,50,50,.4);background:var(--red-bg);animation:rp 2s ease infinite}
+@keyframes rp{0%,100%{box-shadow:0 0 0 0 rgba(184,50,50,.12)}60%{box-shadow:0 0 0 8px rgba(184,50,50,0)}}
+.rec-btn-main svg{width:22px;height:22px}
+.rec-info{flex:1}
+.rec-timer{font-size:22px;font-weight:600;color:var(--ink);letter-spacing:.04em;display:none;font-family:var(--mono)}
+.rec-timer.show{display:block}
+.rec-status-text{font-size:12px;color:var(--ink4);margin-top:2px;line-height:1.4;font-weight:300}
+
+.waveform{display:flex;align-items:center;gap:2.5px;height:24px;opacity:0;transition:opacity .25s;margin-bottom:14px}
+.waveform.on{opacity:1}
+.wb{width:2.5px;background:var(--g400);border-radius:2px;animation:wv .9s ease-in-out infinite}
+@keyframes wv{0%,100%{height:4px}50%{height:20px}}
+.wb:nth-child(1){animation-delay:0s}.wb:nth-child(2){animation-delay:.1s}.wb:nth-child(3){animation-delay:.2s}.wb:nth-child(4){animation-delay:.3s}.wb:nth-child(5){animation-delay:.4s}.wb:nth-child(6){animation-delay:.3s}.wb:nth-child(7){animation-delay:.2s}.wb:nth-child(8){animation-delay:.1s}.wb:nth-child(9){animation-delay:0s}
+
+.clip-cat-section{margin-top:8px}
+.clip-cat-title{font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+.clip-cat-tags{display:flex;flex-wrap:wrap;gap:5px}
+.cat-tag{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:var(--off);border:1px solid var(--line);color:var(--ink3);cursor:pointer;transition:all .15s}
+.cat-tag:hover{border-color:var(--g200);color:var(--g700)}
+.cat-tag.active{background:var(--g100);border-color:var(--g200);color:var(--g800)}
+
+.clips-panel{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:18px;display:flex;flex-direction:column;min-height:320px}
+.clips-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.clips-title{font-size:13px;font-weight:600;color:var(--ink)}
+.clips-count{font-size:10px;font-weight:600;color:var(--g700);background:var(--g100);border:1px solid var(--g200);padding:2px 8px;border-radius:10px;font-family:var(--mono)}
+.clips-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:28px}
+.clips-empty-icon{width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.clips-empty-icon svg{width:16px;height:16px;stroke:var(--ink4);stroke-width:1.3;fill:none}
+.clips-empty-text{font-size:12px;color:var(--ink4);text-align:center;line-height:1.5;font-weight:300}
+.clips-list{display:flex;flex-direction:column;gap:7px;max-height:330px;overflow-y:auto}
+
+.clip-item{background:var(--off);border:1px solid var(--line);border-radius:var(--r);padding:11px 13px;transition:border-color .15s}
+.clip-item:hover{border-color:var(--line2)}
+.clip-item.recording-now{border-color:rgba(184,50,50,.3);background:var(--red-bg)}
+.clip-item-hdr{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.clip-num{width:18px;height:18px;border-radius:50%;background:var(--g100);border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--g700);flex-shrink:0;font-family:var(--mono)}
+.clip-cat-select{appearance:none;background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:2px 18px 2px 6px;font-size:10px;font-weight:500;font-family:var(--font);cursor:pointer;color:var(--ink2);transition:all .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' fill='none'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%238aaa98' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center}
+.clip-cat-select:focus{outline:none;border-color:var(--g200)}
+.clip-time{font-size:9px;color:var(--ink4);margin-left:auto;font-family:var(--mono)}
+.clip-rm{width:16px;height:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink4);border-radius:3px;transition:all .15s;flex-shrink:0}
+.clip-rm:hover{background:var(--red-bg);color:var(--red)}
+.clip-rm svg{width:10px;height:10px;stroke:currentColor;stroke-width:1.8;fill:none}
+.clip-transcript{font-size:12px;color:var(--ink2);line-height:1.55;padding:5px 6px;border-radius:5px;border:1px solid transparent;transition:all .15s;cursor:text;min-height:22px;font-weight:300}
+.clip-transcript:focus{outline:none;border-color:var(--g200);background:var(--g50)}
+.clip-transcript.live{color:rgba(184,50,50,.75);border-color:rgba(184,50,50,.2);background:var(--red-bg);font-style:italic}
+.clip-edit-hint{font-size:10px;color:var(--ink4);margin-top:2px;opacity:0;transition:opacity .15s;font-weight:300}
+.clip-item:hover .clip-edit-hint{opacity:1}
+.clips-footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;color:var(--ink4);font-family:var(--mono)}
+.clips-footer span{color:var(--g700);font-weight:500}
+
+.docs-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.doc-col{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:18px}
+.doc-col-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.doc-col-title{font-size:13px;font-weight:600;color:var(--ink)}
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:8px}
+.b-req{background:var(--g100);color:var(--g700);border:1px solid var(--g200)}
+.b-opt{background:var(--surface);color:var(--ink3);border:1px solid var(--line)}
+.doc-col-desc{font-size:12px;color:var(--ink4);margin-bottom:12px;line-height:1.5;font-weight:300}
+.drop-zone{border:1px dashed var(--line2);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;transition:all .15s}
+.drop-zone:hover{border-color:var(--g300);background:var(--g50)}
+.drop-zone.filled{border-color:var(--g300);border-style:solid;background:var(--g50)}
+.dz-icon{width:26px;height:26px;margin:0 auto 9px;border-radius:6px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.dz-icon svg{width:12px;height:12px;stroke:var(--ink3);stroke-width:1.4;fill:none}
+.dz-text{font-size:12px;color:var(--ink2);margin-bottom:2px;font-weight:500}
+.dz-sub{font-size:11px;color:var(--ink4);font-weight:300}
+input[type=file]{display:none}
+.file-list{margin-top:9px;display:flex;flex-direction:column;gap:4px}
+.file-item{display:flex;align-items:center;justify-content:space-between;background:var(--off);border-radius:6px;border:1px solid var(--line);padding:6px 9px}
+.fi-left{display:flex;align-items:center;gap:6px}
+.ft{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;font-family:var(--mono)}
+.ft-pdf{background:#fdf2f2;color:var(--red);border:1px solid #f5c9c4}.ft-img{background:#eff5fd;color:#1a56b0;border:1px solid #c5d8f8}.ft-doc{background:var(--g100);color:var(--g700);border:1px solid var(--g200)}.ft-txt{background:var(--surface);color:var(--ink2);border:1px solid var(--line)}
+.fi-name{font-size:12px;color:var(--ink);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.fi-status{font-size:10px;color:var(--ink4);margin-top:1px;font-weight:300}
+.fi-status.ok{color:var(--g600)}.fi-status.loading{color:var(--ink4)}.fi-status.warn{color:#a06000}
+.fi-rm{width:15px;height:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink4);border-radius:3px;transition:all .15s;flex-shrink:0}
+.fi-rm:hover{background:var(--red-bg);color:var(--red)}
+.fi-rm svg{width:9px;height:9px;stroke:currentColor;stroke-width:1.8;fill:none}
+
+.btn{padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;letter-spacing:-.1px}
+.btn-p{background:var(--g800);color:#fff}
+.btn-p:hover{background:var(--g700)}
+.btn-p:disabled{background:var(--surface);color:var(--ink4);cursor:not-allowed}
+.btn-o{background:var(--bg);border:1px solid var(--line2);color:var(--ink2)}
+.btn-o:hover{border-color:var(--g200);color:var(--ink)}
+.btn-g{background:var(--g100);border:1px solid var(--g200);color:var(--g800)}
+.btn-g:hover{background:var(--g200)}
+.btn-sm{padding:7px 13px;font-size:12px}
+.btn-row{display:flex;gap:7px;justify-content:flex-end;margin-top:26px;flex-wrap:wrap}
+
+.proc-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:52px 32px;display:none;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.proc-card.on{display:flex}
+.spinner{width:30px;height:30px;border:1.5px solid var(--surface);border-top-color:var(--g600);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.proc-sub{font-size:12px;color:var(--ink4);font-weight:300}
+.pipeline{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.ps{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;border:1px solid var(--line);color:var(--ink4);transition:all .3s;background:var(--bg)}
+.ps.active{border-color:var(--g200);color:var(--g700);background:var(--g50)}
+.ps.done{border-color:var(--g200);color:var(--g600);background:var(--g100)}
+.pa{color:var(--line2);font-size:11px}
+
+.review-layout{display:grid;grid-template-columns:280px 1fr;gap:18px}
+.rc-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink4);margin-bottom:10px}
+.src-list{display:flex;flex-direction:column;gap:7px}
+.src-card{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.src-card-hdr{padding:9px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line)}
+.src-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.src-name{font-size:12px;font-weight:500;color:var(--ink)}
+.src-type{font-size:10px;color:var(--ink4);margin-left:auto;font-weight:300}
+.src-body{padding:10px 12px;font-size:11px;color:var(--ink4);line-height:1.6;max-height:110px;overflow-y:auto;font-style:italic;font-weight:300}
+
+.filled-doc{background:var(--bg);border:1px solid var(--line);border-radius:var(--r2);padding:18px;max-height:500px;overflow-y:auto}
+.doc-field{margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.doc-field:last-child{border-bottom:none;margin-bottom:0}
+.doc-field-hdr{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.doc-field-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--g600)}
+.doc-field-src{font-size:9px;font-weight:500;padding:1px 5px;border-radius:3px;border:1px solid}
+.doc-field-value{font-size:13px;color:var(--ink);line-height:1.6;min-height:20px;padding:4px 6px;border-radius:5px;border:1px solid transparent;transition:all .15s;cursor:text;font-weight:300}
+.doc-field-value:focus{outline:none;border-color:var(--g200);background:var(--g50)}
+.doc-field-value.empty{color:var(--ink4);font-style:italic}
+
+.voice-edit-section{margin-top:13px;background:var(--off);border:1px solid var(--line);border-radius:var(--r);padding:15px}
+.ve-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.ve-desc{font-size:12px;color:var(--ink4);margin-bottom:11px;line-height:1.5;font-weight:300}
+.ve-record-row{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.ve-rec-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.ve-rec-btn:hover{border-color:var(--g200);background:var(--g50)}
+.ve-rec-btn.rec{border-color:rgba(184,50,50,.35);background:var(--red-bg);animation:rp 2s ease infinite}
+.ve-rec-btn svg{width:15px;height:15px;stroke-width:1.5;fill:none}
+.ve-status{font-size:12px;color:var(--ink4);font-weight:300}
+.ve-timer{font-size:15px;font-weight:600;color:var(--ink);display:none;font-family:var(--mono)}
+.ve-timer.show{display:block}
+.ve-tx{width:100%;min-height:50px;background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:8px 11px;color:var(--ink);font-family:var(--font);font-size:12px;line-height:1.5;resize:vertical;font-weight:300}
+.ve-tx:focus{outline:none;border-color:var(--g200)}
+.ve-tx::placeholder{color:var(--ink4)}
+
+.src-legend{display:flex;align-items:center;gap:6px;margin-bottom:13px;flex-wrap:wrap}
+.src-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500;border:1px solid}
+.success-banner{display:none;align-items:center;gap:9px;padding:11px 15px;background:var(--g50);border:1px solid var(--g200);border-radius:var(--r);font-size:13px;color:var(--g800);margin-top:11px}
+.success-banner.on{display:flex}
+.success-banner svg{width:14px;height:14px;stroke:var(--g600);stroke-width:1.5;fill:none;flex-shrink:0}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+@media(max-width:720px){
+  .main,.hdr{padding-left:20px;padding-right:20px}
+  .specialty-grid,.docs-grid,.dictation-layout,.review-layout{grid-template-columns:1fr}
+  .step-label{display:none}
+}
+
+</style>
+
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5a3 3 0 0 1 3 3c0 1.4-.8 2.6-2 3.2L8.5 12h-4l1-4.3a3 3 0 0 1-2-2.7 3 3 0 0 1 3-3z" fill="white" fill-opacity=".9"/><rect x="4.5" y="12" width="4" height="1" rx=".5" fill="white" fill-opacity=".5"/></svg>
+    </div>
+    <div class="logo-text">Vox<span>Sana</span></div>
+  </div>
+  <div class="hdr-badge">Physician documentation</div>
+</header>
+
+<main class="main">
+  <div class="steps">
+    <div class="step active" id="s1"><div class="step-num">1</div><div class="step-label">Specialty</div></div>
+    <div class="step-line"></div>
+    <div class="step" id="s2"><div class="step-num">2</div><div class="step-label">Dictation</div></div>
+    <div class="step-line"></div>
+    <div class="step" id="s3"><div class="step-num">3</div><div class="step-label">Documents</div></div>
+    <div class="step-line"></div>
+    <div class="step" id="s4"><div class="step-num">4</div><div class="step-label">Review</div></div>
+  </div>
+
+  <!-- 1 SPECIALTY -->
+  <div class="panel active" id="p1">
+    <div class="panel-title">Select your specialty</div>
+    <div class="panel-subtitle">VoxSana loads a specialty-specific knowledge base for accurate terminology, BNO-10 codes, and field recognition.</div>
+    <div class="specialty-grid">
+      <div class="specialty-card" onclick="pickSpec('gp',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5"/><path d="M1.5 12c0-2.5 2.5-4.5 5.5-4.5s5.5 2 5.5 4.5" stroke-linecap="round"/></svg></div>
+        <div class="specialty-name">General Practice</div><div class="specialty-desc">SOAP notes, referrals, prescriptions, BNO-10</div>
+      </div>
+      <div class="specialty-card" onclick="pickSpec('cardiology',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><path d="M7 12S1.5 8 1.5 4.5a2.8 2.8 0 0 1 5.5-1A2.8 2.8 0 0 1 12.5 4.5C12.5 8 7 12 7 12z" stroke-linejoin="round"/></svg></div>
+        <div class="specialty-name">Cardiology</div><div class="specialty-desc">ECG, cardiac notes, risk assessment</div>
+      </div>
+      <div class="specialty-card" onclick="pickSpec('dermatology',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><circle cx="5.5" cy="6.2" r=".8" fill="currentColor" stroke="none"/><circle cx="8.5" cy="6.2" r=".8" fill="currentColor" stroke="none"/><path d="M4.5 9c.7.7 4.3.7 5 0" stroke-linecap="round"/></svg></div>
+        <div class="specialty-name">Dermatology</div><div class="specialty-desc">Lesion notes, biopsy, treatment plans</div>
+      </div>
+      <div class="specialty-card" onclick="pickSpec('neurology',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><path d="M7 1.5c-2.2 0-4 1.8-4 4 0 1.2.5 2.3 1.3 3L3.2 12.5h7.6L9.7 8.5c.8-.7 1.3-1.8 1.3-3 0-2.2-1.8-4-4-4z" stroke-linejoin="round"/></svg></div>
+        <div class="specialty-name">Neurology</div><div class="specialty-desc">Neurological exam, symptom mapping</div>
+      </div>
+      <div class="specialty-card" onclick="pickSpec('ortho',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><path d="M4.5 1.5l1.2 3.5H3.5l2 7.5M9.5 1.5l-1.2 3.5H10.5l-2 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="specialty-name">Orthopaedics</div><div class="specialty-desc">Musculoskeletal, imaging findings</div>
+      </div>
+      <div class="specialty-card" onclick="pickSpec('psychiatry',this)">
+        <div class="specialty-icon"><svg viewBox="0 0 14 14"><path d="M2.5 7c0-2.5 2-4.5 4.5-4.5S11.5 4.5 11.5 7c0 1.5-.7 2.8-1.8 3.7V12H4.3v-1.3C3.2 9.8 2.5 8.5 2.5 7z" stroke-linejoin="round"/></svg></div>
+        <div class="specialty-name">Psychiatry</div><div class="specialty-desc">MSE, therapy notes, medication review</div>
+      </div>
+    </div>
+    <div class="btn-row" style="justify-content:flex-start">
+      <button class="btn btn-p" id="btn1" disabled onclick="goTo(2)">Continue</button>
+    </div>
+  </div>
+
+  <!-- 2 DICTATION -->
+  <div class="panel" id="p2">
+    <div class="panel-title">Physician dictation</div>
+    <div class="panel-subtitle">Record short, targeted clips throughout the consultation. Transcribed immediately — edit inline if needed.</div>
+    <div class="legal-notice">
+      <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/><path d="M7 6.5v3" stroke-linecap="round"/><circle cx="7" cy="4.8" r=".6" fill="currentColor" stroke="none"/></svg>
+      <span><strong style="color:var(--ink)">Ptk. 2:48</strong> — Only the physician's voice is recorded. Patient consent is not required in this mode.</span>
+    </div>
+    <div class="dictation-layout">
+      <div class="rec-control">
+        <div class="rec-control-title">Record a clip</div>
+        <div class="rec-control-desc">Press record, dictate the relevant information, then stop. Repeat as many times as needed.</div>
+        <div class="rec-btn-row">
+          <button class="rec-btn-main" id="rec-btn" onclick="toggleRec()">
+            <svg id="mic-ic" viewBox="0 0 22 22" fill="none" style="stroke:var(--g700);stroke-width:1.5"><rect x="7" y="2" width="8" height="12" rx="4"/><path d="M4 11c0 3.9 3.1 7 7 7s7-3.1 7-7" stroke-linecap="round"/><line x1="11" y1="18" x2="11" y2="21" stroke-linecap="round"/><line x1="8" y1="21" x2="14" y2="21" stroke-linecap="round"/></svg>
+            <svg id="stop-ic" viewBox="0 0 22 22" fill="none" style="display:none"><rect x="7" y="7" width="8" height="8" rx="2" fill="var(--red)"/></svg>
+          </button>
+          <div class="rec-info">
+            <div class="rec-timer" id="rec-timer">0:00</div>
+            <div class="rec-status-text" id="rec-status">Press to begin recording</div>
+          </div>
+        </div>
+        <div class="waveform" id="wf"><div class="wb" style="height:5px"></div><div class="wb" style="height:12px"></div><div class="wb" style="height:18px"></div><div class="wb" style="height:8px"></div><div class="wb" style="height:22px"></div><div class="wb" style="height:14px"></div><div class="wb" style="height:16px"></div><div class="wb" style="height:9px"></div><div class="wb" style="height:14px"></div></div>
+        <div class="clip-cat-section">
+          <div class="clip-cat-title">Tag next clip as</div>
+          <div class="clip-cat-tags" id="cat-tags">
+            <span class="cat-tag active" onclick="pickCat(this,'general')">General</span>
+            <span class="cat-tag" onclick="pickCat(this,'complaint')">Complaint</span>
+            <span class="cat-tag" onclick="pickCat(this,'anamnesis')">Anamnesis</span>
+            <span class="cat-tag" onclick="pickCat(this,'status')">Status</span>
+            <span class="cat-tag" onclick="pickCat(this,'diagnosis')">Diagnosis</span>
+            <span class="cat-tag" onclick="pickCat(this,'plan')">Plan / Rx</span>
+            <span class="cat-tag" onclick="pickCat(this,'admin')">Admin</span>
+          </div>
+        </div>
+      </div>
+      <div class="clips-panel">
+        <div class="clips-header">
+          <div class="clips-title">Dictation clips</div>
+          <div class="clips-count" id="clips-count">0 clips</div>
+        </div>
+        <div id="clips-empty" class="clips-empty">
+          <div class="clips-empty-icon"><svg viewBox="0 0 16 16"><rect x="5" y="1.5" width="6" height="9" rx="3"/><path d="M2.5 8.5c0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5" stroke-linecap="round"/><line x1="8" y1="14" x2="8" y2="16" stroke-linecap="round"/></svg></div>
+          <div class="clips-empty-text">No clips yet.<br>Start dictating to begin.</div>
+        </div>
+        <div class="clips-list" id="clips-list" style="display:none"></div>
+        <div class="clips-footer" id="clips-footer" style="display:none">Total: <span id="total-words">0</span> sec</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-o" onclick="goTo(1)">Back</button>
+      <button class="btn btn-p" id="btn2" disabled onclick="goTo(3)">Add documents</button>
+    </div>
+  </div>
+
+  <!-- 3 DOCUMENTS -->
+  <div class="panel" id="p3">
+    <div class="panel-title">Upload documents</div>
+    <div class="panel-subtitle">Upload your template and any supporting documents. Each source is attributed separately in the filled output.</div>
+    <div class="docs-grid">
+      <div class="doc-col">
+        <div class="doc-col-hdr"><div class="doc-col-title">Document template</div><span class="badge b-req">Required</span></div>
+        <div class="doc-col-desc">The form to fill — ambuláns lap, beutaló, zárójelentés, or any custom template.</div>
+        <div class="drop-zone" id="tz" onclick="document.getElementById('t-in').click()" ondragover="dov(event)" ondrop="ddr(event,'t')">
+          <div class="dz-icon"><svg viewBox="0 0 12 12"><rect x="1.5" y="1" width="9" height="10" rx="1.5"/><path d="M3.5 4.5h5M3.5 6.5h3.5" stroke-linecap="round"/></svg></div>
+          <div class="dz-text">Drop or click to upload</div><div class="dz-sub">PDF, DOCX, TXT</div>
+        </div>
+        <input type="file" id="t-in" accept=".pdf,.docx,.txt,.doc" onchange="addF(event,'t')">
+        <div class="file-list" id="t-list"></div>
+      </div>
+      <div class="doc-col">
+        <div class="doc-col-hdr"><div class="doc-col-title">Supporting documents</div><span class="badge b-opt">Optional</span></div>
+        <div class="doc-col-desc">Previous lab results, imaging, earlier ambuláns laps. Each attributed individually.</div>
+        <div class="drop-zone" id="pz" onclick="document.getElementById('p-in').click()" ondragover="dov(event)" ondrop="ddr(event,'p')">
+          <div class="dz-icon"><svg viewBox="0 0 12 12"><path d="M6 1v6M3.5 4.5L6 7l2.5-2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 9v1.5h10V9" stroke-linecap="round"/></svg></div>
+          <div class="dz-text">Drop or click to upload</div><div class="dz-sub">PDF, JPG, PNG, BMP, TIFF, TXT</div>
+        </div>
+        <input type="file" id="p-in" accept=".pdf,.jpg,.jpeg,.png,.bmp,.tiff,.tif,.txt" multiple onchange="addF(event,'p')">
+        <div class="file-list" id="p-list"></div>
+      </div>
+    </div>
+    <div class="notice"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/><path d="M7 6.5v3" stroke-linecap="round"/><circle cx="7" cy="4.8" r=".6" fill="currentColor" stroke="none"/></svg><span>Every filled field will display its source. Fields that cannot be confirmed from any source are left blank.</span></div>
+    <div class="btn-row">
+      <button class="btn btn-o" onclick="goTo(2)">Back</button>
+      <button class="btn btn-p" id="btn-proc" disabled onclick="runProcess()">Fill document</button>
+    </div>
+  </div>
+
+  <!-- 4 REVIEW -->
+  <div class="panel" id="p4">
+    <div class="panel-title">Review & approve</div>
+    <div class="panel-subtitle">Click any field to edit. Use voice corrections for quick updates. Approve when the document is complete.</div>
+    <div class="proc-card" id="proc-card">
+      <div class="spinner"></div>
+      <div class="proc-title">Processing dictation</div>
+      <div class="proc-sub" id="proc-sub">Merging clips...</div>
+      <div class="pipeline">
+        <div class="ps" id="ps0">Merge clips</div><div class="pa">→</div>
+        <div class="ps" id="ps1">Convert terminology</div><div class="pa">→</div>
+        <div class="ps" id="ps2">Structure context</div><div class="pa">→</div>
+        <div class="ps" id="ps3">Fill template</div><div class="pa">→</div>
+        <div class="ps" id="ps4">Attribute sources</div>
+      </div>
+    </div>
+    <div id="rev" style="display:none">
+      <div class="src-legend" id="src-legend"></div>
+      <div class="review-layout">
+        <div><div class="rc-title">Sources</div><div class="src-list" id="src-list"></div></div>
+        <div>
+          <div class="rc-title">Filled template</div>
+          <div class="filled-doc" id="filled-doc"></div>
+          <div class="voice-edit-section">
+            <div class="ve-title">Voice corrections</div>
+            <div class="ve-desc">Record a short correction or type it. Only the affected fields will be updated.</div>
+            <div class="ve-record-row">
+              <button class="ve-rec-btn" id="ve-btn" onclick="toggleVeRec()">
+                <svg id="ve-mic" viewBox="0 0 16 16" fill="none" style="stroke:var(--ink2)"><rect x="5" y="1" width="6" height="9" rx="3"/><path d="M2 8c0 3.3 2.7 6 6 6s6-2.7 6-6" stroke-linecap="round"/><line x1="8" y1="14" x2="8" y2="16" stroke-linecap="round"/></svg>
+                <svg id="ve-stop" viewBox="0 0 16 16" fill="none" style="display:none"><rect x="5" y="5" width="6" height="6" rx="1.5" fill="var(--red)"/></svg>
+              </button>
+              <div>
+                <div class="ve-timer" id="ve-timer">0:00</div>
+                <div class="ve-status" id="ve-status">Press to record a correction</div>
+              </div>
+            </div>
+            <textarea class="ve-tx" id="ve-tx" placeholder="e.g. 'Change blood pressure to 140/90' or 'Add hypertension to diagnosis'"></textarea>
+            <div style="margin-top:8px"><button class="btn btn-sm btn-o" id="ve-apply-btn" onclick="applyCorrection()">Apply correction</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-o" onclick="goTo(3)">Re-upload</button>
+        <button class="btn btn-o" onclick="copyDoc()">Copy</button>
+        <button class="btn btn-o" onclick="dlDoc()">Download</button>
+        <button class="btn btn-g" onclick="approveDoc()">Approve & save</button>
+      </div>
+      <div class="success-banner" id="suc">
+        <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5"/><path d="M4.5 7l2 2 3-3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Document approved. Session data deleted. Ready for next patient.
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+
+var S={
+  specialty:null, clips:[], currentCat:'general',
+  tFiles:[], pFiles:[],
+  isRec:false, mediaRec:null, recog:null, timerInt:null, secs:0,
+  activeClipId:null,
+  isVeRec:false, veRecog:null, veTimerInt:null, veSecs:0
+};
+
+var CAT_COLORS={general:'#8a8a92',complaint:'#e05252',anamnesis:'#5b9bd5',status:'#4cad7c',diagnosis:'#c9a84c',plan:'#9b7ed4',admin:'#e0a052'};
+var SRC_COLORS={dictation:'#c9a84c',lab:'#5b9bd5',prev:'#9b7ed4',img:'#4cad7c',empty:'#555'};
+var CATS=['general','complaint','anamnesis','status','diagnosis','plan','admin'];
+
+var SPEC={
+  gp:`You are assisting a Hungarian General Practitioner. BNO-10 codes required.
+Convert colloquial to clinical: "szúr a szíve"→precordialis fájdalom, "szédül"→vertigo/lipothymia, "dagadt a lába"→perifériás oedema, "nehezen vesz levegőt"→dyspnoea, "fáj a feje"→cephalalgia, "hányinger"→nausea, "hasmenés"→diarrhoea, "fül zúgás"→tinnitus, "vérköpés"→haemoptysis.
+BNO: J06.9 légúti fertőzés, J03.9 tonsillitis, I10 hypertonia, E11 diabetes, M54.5 lumbago, J45 asthma, F32 depresszió, K29 gastritis.
+Fields: chief_complaint, hpi, pmh, medications, allergies, exam_findings, diagnosis_bno, plan, prescription, referral, follow_up.`,
+  cardiology:`You are assisting a Hungarian Cardiologist. BNO-10 required.
+Convert: "szúr a szíve"→precordialis fájdalom, "szorítja mellkasát"→angina pectoris típusú panasz, "dobog a szíve"→palpitatio, "elfullad"→dyspnoea d'effort, "lába dagad"→bilaterális perifériás oedema.
+BNO: I20 angina, I21 AMI, I48 pitvarfibrilláció, I50 szívelégtelenség, I10 hypertonia.
+Fields: chief_complaint, cardiac_history, risk_factors, current_medications, bp_pulse, heart_sounds, ecg_findings, echo_results, diagnosis_bno, treatment_plan, follow_up.`,
+  dermatology:`You are assisting a Hungarian Dermatologist. BNO-10 required.
+Convert: "piros folt"→erythemás macula, "kidudorodás"→papula/nodulus, "hólyag"→vesicula/bulla, "viszketés"→pruritus, "hámlás"→desquamatio.
+BNO: L20 atópiás dermatitis, L40 psoriasis, L50 urticaria, C44 bőrkarcinoma, L70 acne.
+Fields: chief_complaint, lesion_description, skin_type, history, dermoscopy_findings, diagnosis_bno, treatment_plan, follow_up.`,
+  neurology:`You are assisting a Hungarian Neurologist. BNO-10 required.
+Convert: "fáj a feje"→cephalalgia, "szédül"→vertigo, "zsibbad"→paraesthesia, "reszket"→tremor, "görcsöl"→convulsio.
+BNO: G43 migrén, G40 epilepszia, G35 sclerosis multiplex, G20 Parkinson.
+Fields: chief_complaint, neurological_symptoms, onset, neuro_exam, imaging_findings, diagnosis_bno, medication_plan, follow_up.`,
+  ortho:`You are assisting a Hungarian Orthopaedic Surgeon. BNO-10 required.
+Convert: "fáj a térde"→arthralgia genus, "dagadt az ízülete"→articulatio effusio, "ropog"→crepitatio, "merev reggel"→reggeli ízületi merevség.
+BNO: M17 gonarthrosis, M16 coxarthrosis, M75 váll szindróma, M54 hátfájás.
+Fields: chief_complaint, injury_mechanism, pain_description, functional_limits, exam_findings, imaging_findings, diagnosis_bno, treatment_plan, physio_referral, follow_up.`,
+  psychiatry:`You are assisting a Hungarian Psychiatrist. BNO-10 required.
+Convert: "szomorú"→depressív hangulat, "szorongó"→anxietas, "nem tud aludni"→insomnia, "hallja a hangokat"→akusztikus hallucináció.
+BNO: F32 depressziós epizód, F41 szorongásos zavar, F20 schizophrenia, F31 bipoláris zavar.
+Fields: presenting_complaint, psychiatric_history, current_symptoms, mse, current_medications, diagnosis_bno, treatment_plan, risk_assessment, follow_up.`
+};
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+function goTo(n){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('p'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach(function(s,i){
+    s.classList.remove('active','done');
+    if(i+1<n)s.classList.add('done');
+    if(i+1===n)s.classList.add('active');
+  });
+}
+function pickSpec(k,el){
+  document.querySelectorAll('.spec-card').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel'); S.specialty=k;
+  document.getElementById('btn1').disabled=false;
+}
+function pickCat(el,cat){
+  document.querySelectorAll('.cat-tag').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active'); S.currentCat=cat;
+}
+
+// ── RECORDING ─────────────────────────────────────────────────────────────────
+function toggleRec(){if(!S.isRec)startRec();else stopRec();}
+
+function startRec(){
+  // Create clip entry immediately
+  var clipId=Date.now();
+  var clip={id:clipId,category:S.currentCat,transcript:'',secs:0,timestamp:new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'})};
+  S.clips.push(clip);
+  S.activeClipId=clipId;
+  renderClips();
+
+  // Speech recognition — try English for better medical term recognition
+  // then fall back showing Hungarian words as-is
+  if('SpeechRecognition' in window||'webkitSpeechRecognition' in window){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    S.recog=new SR();
+    S.recog.continuous=true;
+    S.recog.interimResults=true;
+    // Use Hungarian — better for mixed HU+Latin than pure EN
+    // Medical terms will need manual correction which is now easy
+    S.recog.lang='hu-HU';
+
+    S.recog.onresult=function(e){
+      var fin='',interim='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal)fin+=e.results[i][0].transcript+' ';
+        else interim+=e.results[i][0].transcript;
+      }
+      // Update clip transcript in state
+      var c=getClip(S.activeClipId);
+      if(c){c.transcript=fin.trim();}
+      // Update DOM live — find the editable div
+      var txEl=document.querySelector('[data-clip-id="'+S.activeClipId+'"] .clip-transcript');
+      if(txEl){
+        txEl.textContent=(fin+interim).trim()||'Listening...';
+      }
+    };
+    S.recog.onerror=function(e){
+      var c=getClip(S.activeClipId);
+      if(c&&!c.transcript)c.transcript='[Speech recognition error — please type below]';
+      renderClips();
+    };
+    try{S.recog.start();}catch(ex){}
+  }
+
+  // MediaRecorder backup
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    S.mediaRec=new MediaRecorder(stream);
+    S.mediaRec.onstop=function(){stream.getTracks().forEach(function(t){t.stop();});};
+    S.mediaRec.start();
+  }).catch(function(){});
+
+  S.isRec=true; S.secs=0;
+  document.getElementById('rec-btn').classList.add('rec');
+  document.getElementById('mic-ic').style.display='none';
+  document.getElementById('stop-ic').style.display='block';
+  document.getElementById('wf').classList.add('on');
+  document.getElementById('rec-timer').classList.add('show');
+  document.getElementById('rec-status').textContent='Recording clip #'+S.clips.length+'...';
+
+  S.timerInt=setInterval(function(){
+    S.secs++;
+    var m=Math.floor(S.secs/60),sec=String(S.secs%60).padStart(2,'0');
+    document.getElementById('rec-timer').textContent=m+':'+sec;
+    var c=getClip(S.activeClipId); if(c)c.secs=S.secs;
+  },1000);
+}
+
+function stopRec(){
+  if(S.recog){try{S.recog.stop();}catch(e){}}
+  if(S.mediaRec&&S.mediaRec.state!=='inactive')S.mediaRec.stop();
+  clearInterval(S.timerInt); S.isRec=false;
+
+  // Sync final text from DOM to state (in case user edited live)
+  var txEl=document.querySelector('[data-clip-id="'+S.activeClipId+'"] .clip-transcript');
+  var c=getClip(S.activeClipId);
+  if(c&&txEl){
+    c.transcript=txEl.textContent.trim()||'['+c.secs+'s clip — no transcript]';
+    c.secs=S.secs;
+  }
+
+  document.getElementById('rec-btn').classList.remove('rec');
+  document.getElementById('mic-ic').style.display='block';
+  document.getElementById('stop-ic').style.display='none';
+  document.getElementById('wf').classList.remove('on');
+  document.getElementById('rec-status').textContent='Clip saved. You can edit the text or record another.';
+
+  S.activeClipId=null;
+  renderClips();
+  checkDictReady();
+}
+
+function getClip(id){return S.clips.find(function(c){return c.id===id;});}
+
+function updateClipCat(id,newCat){
+  var c=getClip(id); if(c)c.category=newCat;
+  // Update badge color
+  var badge=document.querySelector('[data-clip-id="'+id+'"] .clip-cat-select');
+  if(badge){
+    var col=CAT_COLORS[newCat]||'#8a8a92';
+    badge.style.color=col;
+    badge.style.borderColor=col+'60';
+    badge.style.background=col+'15';
+  }
+}
+
+function syncTranscript(id,el){
+  var c=getClip(id); if(c)c.transcript=el.textContent.trim();
+  checkDictReady();
+}
+
+
+
+
+
+
+
+function removeClip(id){
+  S.clips=S.clips.filter(function(c){return c.id!==id;});
+  if(!S.isRec){
+    document.getElementById('rec-timer').textContent='0:00';
+    document.getElementById('rec-timer').classList.remove('show');
+    document.getElementById('rec-status').textContent='Press to record a dictation clip';
+    S.secs=0;
+  }
+  renderClips(); checkDictReady();
+}
+
+function renderClips(){
+  var list=document.getElementById('clips-list');
+  var empty=document.getElementById('clips-empty');
+  var footer=document.getElementById('clips-footer');
+  document.getElementById('clips-count').textContent=S.clips.length+(S.clips.length===1?' clip':' clips');
+
+  if(!S.clips.length){
+    empty.style.display='flex'; list.style.display='none'; footer.style.display='none'; return;
+  }
+  empty.style.display='none'; list.style.display='flex'; footer.style.display='block';
+
+  list.innerHTML='';
+  S.clips.forEach(function(clip,i){
+    var col=CAT_COLORS[clip.category]||'#8a8a92';
+    var isLive=clip.id===S.activeClipId;
+    var div=document.createElement('div');
+    div.className='clip-item'+(isLive?' recording-now':'');
+    div.setAttribute('data-clip-id',clip.id);
+
+    // Build cat select options
+    var opts=CATS.map(function(cat){
+      return '<option value="'+cat+'"'+(cat===clip.category?' selected':'')+'>'+cat+'</option>';
+    }).join('');
+
+    div.innerHTML=
+      '<div class="clip-item-hdr">'+
+        '<div class="clip-num">'+(i+1)+'</div>'+
+        '<select class="clip-cat-select" style="color:'+col+';border-color:'+col+'60;background:'+col+'15" onchange="updateClipCat('+clip.id+',this.value)">'+opts+'</select>'+
+        '<span class="clip-time">'+clip.timestamp+(clip.secs?' · '+clip.secs+'s':'')+'</span>'+
+        '<span class="clip-rm" onclick="removeClip('+clip.id+')">×</span>'+
+      '</div>'+
+      '<div class="clip-transcript-wrap">'+
+        '<div class="clip-transcript'+(isLive?' live':'')+'" contenteditable="true" oninput="syncTranscript('+clip.id+',this)" onblur="syncTranscript('+clip.id+',this)">'+
+          (clip.transcript||(isLive?'Listening...':'[empty — click to edit]'))+
+        '</div>'+
+        '<div class="clip-edit-hint">✏ Click to edit transcript</div>'+
+      '</div>';
+    list.appendChild(div);
+  });
+
+  var words=S.clips.reduce(function(a,c){return a+(c.transcript?c.transcript.split(/\s+/).length:0);},0);
+  document.getElementById('total-words').textContent=words;
+}
+
+function checkDictReady(){
+  var ok=S.clips.length>0&&S.clips.some(function(c){return c.transcript&&c.transcript.length>5;});
+  document.getElementById('btn2').disabled=!ok;
+}
+
+// ── FILES ─────────────────────────────────────────────────────────────────────
+function dov(e){e.preventDefault();}
+function ddr(e,t){e.preventDefault();var fs=e.dataTransfer.files;for(var i=0;i<fs.length;i++)handleFile(fs[i],t);}
+function addF(e,t){var fs=e.target.files;for(var i=0;i<fs.length;i++)handleFile(fs[i],t);e.target.value='';}
+function getFT(n){var e=n.split('.').pop().toLowerCase();if(['jpg','jpeg','png','bmp','tiff','tif'].includes(e))return'image';if(e==='pdf')return'pdf';if(['doc','docx'].includes(e))return'docx';return'txt';}
+function handleFile(file,type){
+  var ft=getFT(file.name);
+  var entry={file:file,name:file.name,ftype:ft,extracted:'',status:'loading',isImage:ft==='image'};
+  if(type==='t'){S.tFiles=[entry];}else{S.pFiles.push(entry);}
+  renderLists(); extractContent(entry);
+}
+function extractContent(entry){
+  var reader=new FileReader();
+  if(entry.isImage){
+    reader.onload=function(e){entry.extracted=e.target.result;entry.status='ok';renderLists();checkDocReady();};
+    reader.readAsDataURL(entry.file);
+  } else {
+    reader.onload=function(e){
+      var clean=e.target.result.replace(/[^\x20-\x7E\n\r\t\u00C0-\u024F]/g,' ').trim();
+      entry.extracted=clean.length>30?clean:'[Binary: '+entry.name+']';
+      entry.status=clean.length>30?'ok':'warn';
+      renderLists();checkDocReady();
+    };
+    reader.onerror=function(){entry.extracted='[Error: '+entry.name+']';entry.status='warn';renderLists();checkDocReady();};
+    reader.readAsText(entry.file);
+  }
+}
+function checkDocReady(){document.getElementById('btn-proc').disabled=!(S.tFiles.length>0&&S.tFiles[0].status!=='loading');}
+function renderLists(){
+  rList('t-list',S.tFiles,'t'); rList('p-list',S.pFiles,'p');
+  if(S.tFiles.length>0)document.getElementById('tz').classList.add('filled');
+  if(S.pFiles.length>0)document.getElementById('pz').classList.add('filled');
+}
+function rList(id,files,type){
+  var el=document.getElementById(id); el.innerHTML='';
+  files.forEach(function(f,i){
+    var cls='ft-'+(f.ftype==='image'?'img':f.ftype==='pdf'?'pdf':f.ftype==='docx'?'doc':'txt');
+    var st=f.status==='ok'?'✓ Ready':f.status==='loading'?'⏳ Reading...':'⚠ Binary';
+    var sc=f.status==='ok'?'ok':f.status==='loading'?'loading':'warn';
+    el.innerHTML+='<div class="file-item"><div class="fi-left"><span class="ft '+cls+'">'+f.ftype.toUpperCase()+'</span><div><div class="fi-name">'+f.name+'</div><div class="fi-status '+sc+'">'+st+'</div></div></div><span class="fi-rm" onclick="rmFile(\''+type+'\','+i+')">×</span></div>';
+  });
+}
+function rmFile(t,i){if(t==='t'){S.tFiles.splice(i,1);document.getElementById('tz').classList.remove('filled');}else{S.pFiles.splice(i,1);}renderLists();checkDocReady();}
+
+// ── PROCESS ───────────────────────────────────────────────────────────────────
+async function runProcess(){
+  if(!S.tFiles.length||!S.clips.length)return;
+  goTo(4);
+  document.getElementById('proc-card').classList.add('on');
+  document.getElementById('rev').style.display='none';
+
+  var stages=['ps0','ps1','ps2','ps3','ps4'];
+  var labels=['Merging clips...','Converting terminology...','Structuring context...','Filling template...','Attributing sources...'];
+  var si=0;
+  var si_int=setInterval(function(){
+    if(si>0)document.getElementById(stages[si-1]).classList.replace('active','done');
+    if(si<stages.length){document.getElementById(stages[si]).classList.add('active');document.getElementById('proc-sub').textContent=labels[si];si++;}
+  },900);
+
+  var mergedTx=S.clips.map(function(c,i){return '[Clip '+(i+1)+' — '+c.category+']: '+c.transcript;}).join('\n\n');
+  var specP=SPEC[S.specialty]||SPEC.gp;
+  var tmpl=S.tFiles[0].extracted;
+  var sdocs=S.pFiles.map(function(f,i){return{id:'doc_'+i,name:f.name,ftype:f.ftype,content:f.extracted,isImage:f.isImage};});
+  var srcIds='dictation = physician dictation';
+  sdocs.forEach(function(d){srcIds+=', '+d.id+' = '+d.name;});
+
+  var sysP=specP+'\n\nThe physician dictation consists of multiple short clips tagged by category.\nRULES:\n1. Fill ONLY empty template fields from explicitly present sources.\n2. Convert colloquial to clinical terminology.\n3. NEVER invent information.\n4. Leave uncertain fields empty.\n5. Record source_id per field. Source IDs: '+srcIds+'\nReturn ONLY JSON: {"fields":[{"label":"...","value":"...","source":"..."},...]}';
+
+  var content=[];
+  sdocs.forEach(function(d){
+    if(d.isImage&&d.content.startsWith('data:image')){
+      var mm=d.content.match(/data:([^;]+);base64,/);
+      content.push({type:'image',source:{type:'base64',media_type:mm?mm[1]:'image/jpeg',data:d.content.replace(/^data:[^;]+;base64,/,'')}});
+      content.push({type:'text',text:'[Image: '+d.name+' (source_id: '+d.id+')]'});
+    }
+  });
+  var txt='=== PHYSICIAN DICTATION (source_id: dictation) ===\n'+mergedTx+'\n\n';
+  sdocs.forEach(function(d){if(!d.isImage)txt+='=== DOCUMENT: '+d.name+' (source_id: '+d.id+') ===\n'+d.content+'\n\n';});
+  txt+='=== TEMPLATE TO FILL ===\n'+tmpl+'\nReturn JSON.';
+  content.push({type:'text',text:txt});
+
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:sysP,messages:[{role:'user',content:content}]})});
+    clearInterval(si_int);
+    stages.forEach(function(s){document.getElementById(s).classList.add('done');document.getElementById(s).classList.remove('active');});
+    var data=await r.json();
+    var parsed;
+    try{parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());}
+    catch(e){parsed={fields:[{label:'Result',value:data.content[0].text,source:'dictation'}]};}
+    renderReview(mergedTx,parsed,sdocs);
+  }catch(e){
+    clearInterval(si_int);
+    renderReview(mergedTx,{fields:[{label:'Note',value:'API connection required.',source:''}]},sdocs);
+  }
+}
+
+function renderReview(tx,parsed,sdocs){
+  document.getElementById('proc-card').classList.remove('on');
+  document.getElementById('rev').style.display='block';
+
+  var srcMap={dictation:{label:'Physician dictation ('+S.clips.length+' clips)',color:SRC_COLORS.dictation,preview:tx.substring(0,300)+(tx.length>300?'...':'')}};
+  sdocs.forEach(function(d,i){
+    var col=d.isImage?SRC_COLORS.img:i===0?SRC_COLORS.lab:SRC_COLORS.prev;
+    srcMap['doc_'+i]={label:d.name,color:col,preview:d.content.substring(0,260)+(d.content.length>260?'...':'')};
+  });
+
+  var leg=document.getElementById('src-legend');
+  leg.innerHTML='<span style="font-size:11px;color:var(--gray);margin-right:4px">Sources:</span>';
+  Object.keys(srcMap).forEach(function(k){var s=srcMap[k];leg.innerHTML+='<span class="src-chip" style="color:'+s.color+';border-color:'+s.color+'40;background:'+s.color+'15">● '+s.label+'</span>';});
+  leg.innerHTML+='<span class="src-chip" style="color:#555;border-color:#55555540;background:#55555515">○ Not mentioned</span>';
+
+  var sl=document.getElementById('src-list'); sl.innerHTML='';
+  Object.keys(srcMap).forEach(function(k){var s=srcMap[k];sl.innerHTML+='<div class="src-card"><div class="src-card-hdr"><div class="src-dot" style="background:'+s.color+'"></div><div class="src-name">'+s.label+'</div><div class="src-type">'+(k==='dictation'?'Clips':'Document')+'</div></div><div class="src-body">'+s.preview+'</div></div>';});
+
+  var dc=document.getElementById('filled-doc'); dc.innerHTML='';
+  (parsed.fields||[]).forEach(function(f){
+    var hasV=f.value&&f.value.trim();
+    var src=hasV?(f.source||''):'';
+    var col=src&&srcMap[src]?srcMap[src].color:SRC_COLORS.empty;
+    var lbl2=src&&srcMap[src]?srcMap[src].label:(hasV?'Unknown':'Not mentioned');
+    var div=document.createElement('div'); div.className='doc-field';
+    var hdr=document.createElement('div'); hdr.className='doc-field-hdr';
+    var lb=document.createElement('div'); lb.className='doc-field-label'; lb.textContent=f.label;
+    var sb=document.createElement('span'); sb.className='doc-field-src';
+    sb.style.cssText='color:'+col+';border-color:'+col+'40;background:'+col+'12';
+    sb.textContent=lbl2;
+    hdr.appendChild(lb); hdr.appendChild(sb);
+    var vl=document.createElement('div'); vl.className='doc-field-value'+(hasV?'':' empty');
+    vl.contentEditable='true'; vl.textContent=hasV?f.value:'[not mentioned]';
+    div.appendChild(hdr); div.appendChild(vl); dc.appendChild(div);
+  });
+  S._srcMap=srcMap;
+}
+
+// ── VOICE EDIT ────────────────────────────────────────────────────────────────
+function toggleVeRec(){if(!S.isVeRec)startVeRec();else stopVeRec();}
+function startVeRec(){
+  var txt='';
+  if('SpeechRecognition' in window||'webkitSpeechRecognition' in window){
+    var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    S.veRecog=new SR(); S.veRecog.continuous=true; S.veRecog.interimResults=true; S.veRecog.lang='hu-HU';
+    S.veRecog.onresult=function(e){var i2='';for(var i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)txt+=e.results[i][0].transcript+' ';else i2+=e.results[i][0].transcript;}document.getElementById('ve-tx').value=txt+i2;};
+    try{S.veRecog.start();}catch(e){}
+  }
+  S.isVeRec=true; S.veSecs=0;
+  document.getElementById('ve-btn').classList.add('rec');
+  document.getElementById('ve-mic').style.display='none';
+  document.getElementById('ve-stop').style.display='block';
+  document.getElementById('ve-status').textContent='Recording correction...';
+  document.getElementById('ve-timer').classList.add('show');
+  S.veTimerInt=setInterval(function(){S.veSecs++;var m=Math.floor(S.veSecs/60),s=String(S.veSecs%60).padStart(2,'0');document.getElementById('ve-timer').textContent=m+':'+s;},1000);
+}
+function stopVeRec(){
+  if(S.veRecog){try{S.veRecog.stop();}catch(e){}}
+  clearInterval(S.veTimerInt); S.isVeRec=false;
+  document.getElementById('ve-btn').classList.remove('rec');
+  document.getElementById('ve-mic').style.display='block';
+  document.getElementById('ve-stop').style.display='none';
+  document.getElementById('ve-timer').classList.remove('show');
+  document.getElementById('ve-status').textContent='Correction recorded. Apply below.';
+}
+
+async function applyCorrection(){
+  var inst=document.getElementById('ve-tx').value.trim();
+  if(!inst)return;
+  var btn=document.getElementById('ve-apply');
+  btn.disabled=true; btn.textContent='Applying...';
+
+  var fields=[];
+  document.querySelectorAll('.doc-field').forEach(function(f){
+    fields.push({label:f.querySelector('.doc-field-label').textContent,value:f.querySelector('.doc-field-value').textContent});
+  });
+
+  var specP=SPEC[S.specialty]||SPEC.gp;
+  var sysP=specP+'\nUpdate only the affected fields based on the correction instruction. Return ONLY JSON: {"updates":[{"label":"exact label","new_value":"updated value"},...]}';
+  var userMsg='CURRENT DOCUMENT:\n'+JSON.stringify(fields,null,2)+'\n\nCORRECTION:\n'+inst+'\n\nReturn only changed fields.';
+
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,system:sysP,messages:[{role:'user',content:userMsg}]})});
+    var data=await r.json();
+    var parsed=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+    (parsed.updates||[]).forEach(function(u){
+      document.querySelectorAll('.doc-field').forEach(function(f){
+        var lb=f.querySelector('.doc-field-label');
+        var vl=f.querySelector('.doc-field-value');
+        if(lb&&lb.textContent===u.label&&vl){
+          vl.textContent=u.new_value; vl.classList.remove('empty');
+          vl.style.background='rgba(76,173,124,.25)';
+          setTimeout(function(){vl.style.background='';},900);
+        }
+      });
+    });
+    document.getElementById('ve-tx').value='';
+    document.getElementById('ve-status').textContent='Done. Record another correction if needed.';
+  }catch(e){
+    document.getElementById('ve-status').textContent='Error. Please try again.';
+  }
+  btn.disabled=false; btn.textContent='Apply correction →';
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function getDocTxt(){
+  var t='VoxSana — Approved Medical Document\n'+new Date().toLocaleString('en-GB')+'\n'+'─'.repeat(50)+'\n\n';
+  document.querySelectorAll('.doc-field').forEach(function(f){
+    t+=f.querySelector('.doc-field-label').textContent+' ['+f.querySelector('.doc-field-src').textContent+']:\n'+f.querySelector('.doc-field-value').textContent+'\n\n';
+  });
+  return t+'─'.repeat(50)+'\nApproved by physician. Generated by VoxSana.';
+}
+function copyDoc(){navigator.clipboard.writeText(getDocTxt()).then(function(){var b=event.target,o=b.textContent;b.textContent='✓ Copied';setTimeout(function(){b.textContent=o;},2000);});}
+function dlDoc(){var b=new Blob([getDocTxt()],{type:'text/plain'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='voxsana_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(u);}
+function approveDoc(){
+  S.clips=[]; renderClips();
+  document.querySelectorAll('.src-body').forEach(function(e){e.textContent='[Deleted]';});
+  event.target.disabled=true; event.target.textContent='✓ Approved';
+  document.getElementById('suc').classList.add('on');
+}
+
+</script>
+</body>
+</html>
