@@ -23,27 +23,58 @@ export const SPEC_NAMES = {
 export const SPECIALTIES = [
   {
     key: 'gp', name: 'General Practice', desc: 'SOAP notes, referrals, prescriptions, BNO-10',
-    icon: <svg viewBox="0 0 14 14"><circle cx="7" cy="4.5" r="2.5"/><path d="M1.5 12c0-2.5 2.5-4.5 5.5-4.5s5.5 2 5.5 4.5" strokeLinecap="round"/></svg>,
+    // stethoscope: U-shaped tubing + chest-piece circle
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <path d="M4 2.5v3.5a3 3 0 0 0 6 0V2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M7 9v1.2" strokeLinecap="round"/>
+      <circle cx="7" cy="12" r="1.3"/>
+    </svg>,
   },
   {
     key: 'cardiology', name: 'Cardiology', desc: 'ECG, cardiac notes, risk assessment',
-    icon: <svg viewBox="0 0 14 14"><path d="M7 12S1.5 8 1.5 4.5a2.8 2.8 0 0 1 5.5-1A2.8 2.8 0 0 1 12.5 4.5C12.5 8 7 12 7 12z" strokeLinejoin="round"/></svg>,
+    // heart + ECG pulse line beneath
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <path d="M7 9S2.5 6 2.5 3.8a2.2 2.2 0 0 1 4.5-.2 2.2 2.2 0 0 1 4.5.2C11.5 6 7 9 7 9z" strokeLinejoin="round"/>
+      <path d="M1 12h2l.7-1.5.7 3 .5-2 .6.5H13" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>,
   },
   {
     key: 'dermatology', name: 'Dermatology', desc: 'Lesion notes, biopsy, treatment plans',
-    icon: <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><circle cx="5.5" cy="6.2" r=".8" fill="currentColor" stroke="none"/><circle cx="8.5" cy="6.2" r=".8" fill="currentColor" stroke="none"/><path d="M4.5 9c.7.7 4.3.7 5 0" strokeLinecap="round"/></svg>,
+    // magnifying glass focusing on a skin lesion dot
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <circle cx="5.5" cy="5.5" r="3.5"/>
+      <circle cx="5.5" cy="5.5" r="1.2" fill="currentColor" stroke="none"/>
+      <path d="M8.2 8.2l3.5 3.5" strokeLinecap="round" strokeWidth="1.6"/>
+    </svg>,
   },
   {
     key: 'neurology', name: 'Neurology', desc: 'Neurological exam, symptom mapping',
-    icon: <svg viewBox="0 0 14 14"><path d="M7 1.5c-2.2 0-4 1.8-4 4 0 1.2.5 2.3 1.3 3L3.2 12.5h7.6L9.7 8.5c.8-.7 1.3-1.8 1.3-3 0-2.2-1.8-4-4-4z" strokeLinejoin="round"/></svg>,
+    // stylised two-lobe brain
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <path d="M5 12V9.8C3.2 9.3 2 7.9 2 6.2 2 4.3 3.4 3 5 3c.3 0 .5 0 .8.1A2.5 2.5 0 0 1 7 2.5c.7 0 1.3.3 1.8.7.2-.1.5-.2.7-.2C11 3 12.5 4.5 12.5 6.2c0 1.7-1.3 3-3 3.4V12" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M5 12h4" strokeLinecap="round"/>
+      <path d="M4.5 6c.4-.8 1.2-1 2-1" strokeLinecap="round"/>
+      <path d="M9.5 6c-.4-.8-1.2-1-2-1" strokeLinecap="round"/>
+    </svg>,
   },
   {
     key: 'ortho', name: 'Orthopaedics', desc: 'Musculoskeletal, imaging findings',
-    icon: <svg viewBox="0 0 14 14"><path d="M4.5 1.5l1.2 3.5H3.5l2 7.5M9.5 1.5l-1.2 3.5H10.5l-2 7.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    // diagonal bone: two knobs joined by a thick shaft
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <circle cx="3.2" cy="3.2" r="1.7"/>
+      <circle cx="10.8" cy="10.8" r="1.7"/>
+      <path d="M4.6 4.6l4.8 4.8" strokeLinecap="round" strokeWidth="2.2"/>
+    </svg>,
   },
   {
     key: 'psychiatry', name: 'Psychiatry', desc: 'MSE, therapy notes, medication review',
-    icon: <svg viewBox="0 0 14 14"><path d="M2.5 7c0-2.5 2-4.5 4.5-4.5S11.5 4.5 11.5 7c0 1.5-.7 2.8-1.8 3.7V12H4.3v-1.3C3.2 9.8 2.5 8.5 2.5 7z" strokeLinejoin="round"/></svg>,
+    // head silhouette with a thought/speech bubble
+    icon: <svg viewBox="0 0 14 14" fill="none">
+      <path d="M3.5 8C3.5 5.5 5 3.5 7 3.5S10.5 5.5 10.5 8c0 1.4-.6 2.6-1.6 3.3V13H5.1v-1.7C4.1 10.6 3.5 9.4 3.5 8z" strokeLinejoin="round"/>
+      <circle cx="11" cy="3.5" r="1.8"/>
+      <circle cx="9.2" cy="2.2" r=".9"/>
+      <circle cx="7.8" cy="1.3" r=".5" fill="currentColor" stroke="none"/>
+    </svg>,
   },
 ]
 

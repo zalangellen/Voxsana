@@ -267,15 +267,15 @@ button, select, textarea, input { font-family: var(--font); }
   border-radius: 50%;
 }
 .spec-icon, .specialty-icon {
-  width: 30px; height: 30px; border-radius: 8px;
-  background: var(--raised); border: 1px solid var(--border);
+  width: 32px; height: 32px; border-radius: 9px;
+  background: var(--blue-l); border: 1px solid var(--blue-m);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 11px; transition: all var(--t);
 }
 .spec-card.selected .spec-icon, .specialty-card.selected .spec-icon, .specialty-card.sel .spec-icon {
   background: var(--blue-m); border-color: var(--blue);
 }
-.spec-icon svg { width: 14px; height: 14px; stroke: var(--text3); stroke-width: 1.4; fill: none; transition: stroke var(--t); }
+.spec-icon svg { width: 15px; height: 15px; stroke: var(--blue); stroke-width: 1.4; fill: none; transition: stroke var(--t); }
 .spec-card.selected .spec-icon svg, .specialty-card.selected .spec-icon svg, .specialty-card.sel .spec-icon svg { stroke: var(--blue); }
 .spec-name, .specialty-name { font-size: 13px; font-weight: 600; color: var(--text1); margin-bottom: 3px; letter-spacing: -0.2px; }
 .spec-desc, .specialty-desc { font-size: 11px; color: var(--text4); line-height: 1.45; font-weight: 400; }
