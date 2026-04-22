@@ -2,6 +2,7 @@ import useStore from './store'
 import { useTheme } from './hooks/useTheme'
 import Topbar from './components/Topbar'
 import Sidebar from './components/Sidebar'
+import ProgressBar from './components/ProgressBar'
 import StepAbout from './components/StepAbout'
 import StepSpecialty from './components/steps/StepSpecialty'
 import StepDictation from './components/steps/StepDictation'
@@ -26,6 +27,7 @@ export default function App() {
           <StepReview    active={!showAbout && step === 4} />
         </main>
       </div>
+      <ProgressBar />
     </>
   )
 }

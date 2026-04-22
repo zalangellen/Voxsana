@@ -8,12 +8,7 @@ export default function Topbar() {
 
   return (
     <header className="topbar">
-      <a className="logo" href="#">
-        <div className="logo-mark">
-          <img src="/logo.png" alt="Voxana" />
-        </div>
-        <span className="logo-name">Vox<b>ana</b></span>
-      </a>
+      <span className="logo-name">Vox<b>ana</b></span>
       <div className="topbar-sep" />
       <span className="topbar-session">Medical documentation</span>
       <div className="topbar-right">
