@@ -463,6 +463,16 @@ button, select, textarea, input { font-family: var(--font); }
 [data-theme="dark"] .clip-transcript.live { background: rgba(255,69,58,.06); }
 .clip-edit-hint { font-size: 10px; color: var(--text4); margin-top: 2px; opacity: 0; transition: opacity var(--t); }
 .clip-item:hover .clip-edit-hint { opacity: 1; }
+.clip-correcting {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; font-style: italic;
+  color: var(--blue); opacity: 0.75;
+  padding: 8px 0 4px;
+}
+.clip-correcting-spin {
+  width: 13px; height: 13px; flex-shrink: 0;
+  animation: spin 1s linear infinite;
+}
 
 /* ── DOCUMENTS ──────────────────────────────────────────────── */
 .docs-outer { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
