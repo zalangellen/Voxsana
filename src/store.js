@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 const useStore = create((set) => ({
+  showLanding: true,
   step: 1,
   showAbout: false,
   specialty: null,
@@ -21,6 +22,7 @@ const useStore = create((set) => ({
   sdocs: [],
   approved: false,
 
+  setShowLanding: (showLanding) => set({ showLanding }),
   setStep: (step) => set({ step, showAbout: false }),
   setShowAbout: (showAbout) => set({ showAbout }),
   setSpecialty: (specialty) => set({ specialty }),
