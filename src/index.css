@@ -862,15 +862,17 @@ input[type=file] { display: none; }
   max-width: 780px; width: 100%;
 }
 .landing-eyebrow {
-  font-size: 12px; font-weight: 500; letter-spacing: 0.12em;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(37,99,235,0.8);
   margin-bottom: 32px;
 }
 .landing-logo {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(72px, 14vw, 140px);
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1;
   color: #fff;
   animation: landing-glow 2s ease-in-out infinite;
@@ -895,9 +897,10 @@ input[type=file] { display: none; }
   }
 }
 .landing-sub {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 17px; font-weight: 400;
   color: rgba(255,255,255,0.45);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.1px;
   margin-bottom: 64px;
   max-width: 420px;
 }
@@ -919,6 +922,7 @@ input[type=file] { display: none; }
 }
 .landing-stat:hover { background: rgba(255,255,255,0.055); }
 .landing-stat-value {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(36px, 6vw, 56px);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -930,6 +934,7 @@ input[type=file] { display: none; }
   background-clip: text;
 }
 .landing-stat-label {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 12px; font-weight: 400;
   color: rgba(255,255,255,0.38);
   line-height: 1.5;
@@ -938,8 +943,9 @@ input[type=file] { display: none; }
 .landing-btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 16px 52px;
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 16px; font-weight: 600;
-  letter-spacing: -0.2px;
+  letter-spacing: 0.01em;
   color: #fff;
   background: #2563eb;
   border: none; border-radius: 100px;
@@ -966,9 +972,10 @@ input[type=file] { display: none; }
   50%       { box-shadow: 0 0 28px rgba(37,99,235,0.65), 0 4px 28px rgba(37,99,235,0.5); }
 }
 .landing-note {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 11px;
   color: rgba(255,255,255,0.22);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
 }
 @media(max-width:640px) {
   .landing-stats { grid-template-columns: repeat(2, 1fr); }
