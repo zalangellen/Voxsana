@@ -102,7 +102,7 @@ Return ONLY the corrected transcript text, nothing else.`
   }
 }
 
-
+export async function extractDocValues(docContent) {
   const sysP = `You are a medical document parser. Extract ONLY explicitly stated values from the provided documents. Do NOT interpret or infer. Return JSON: {"extracted":[{"key":"Value name","value":"Exact value","source":"filename"},...]}. Focus on: lab values, vital signs, dates, medications, diagnoses, numeric measurements. Maximum 12 items.`
   return callClaude(sysP, `Extract explicit values from these documents:\n\n${docContent.substring(0, 3000)}`, 600)
 }
