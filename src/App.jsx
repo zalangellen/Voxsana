@@ -1,5 +1,6 @@
 import useStore from './store'
 import { useTheme } from './hooks/useTheme'
+import Landing from './components/Landing'
 import Topbar from './components/Topbar'
 import Sidebar from './components/Sidebar'
 import ProgressBar from './components/ProgressBar'
@@ -10,9 +11,12 @@ import StepDocuments from './components/steps/StepDocuments'
 import StepReview from './components/steps/StepReview'
 
 export default function App() {
-  const step      = useStore((s) => s.step)
-  const showAbout = useStore((s) => s.showAbout)
+  const step        = useStore((s) => s.step)
+  const showAbout   = useStore((s) => s.showAbout)
+  const showLanding = useStore((s) => s.showLanding)
   useTheme()
+
+  if (showLanding) return <Landing />
 
   return (
     <>
