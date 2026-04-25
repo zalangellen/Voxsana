@@ -879,10 +879,11 @@ input[type=file] { display: none; }
   margin-bottom: 32px;
 }
 .landing-logo {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(72px, 14vw, 140px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(52px, 11vw, 112px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   line-height: 1;
   color: #fff;
   animation: landing-glow 2s ease-in-out infinite;
