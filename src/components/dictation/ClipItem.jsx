@@ -28,15 +28,24 @@ export default function ClipItem({ clip, index }) {
           <svg viewBox="0 0 10 10"><path d="M2 2l6 6M8 2l-6 6" strokeLinecap="round"/></svg>
         </span>
       </div>
-      <div
-        ref={txRef}
-        className={`clip-transcript ${isLive ? 'live' : ''}`}
-        contentEditable
-        suppressContentEditableWarning
-        onBlur={handleTranscriptBlur}
-        dangerouslySetInnerHTML={{ __html: clip.transcript || (isLive ? 'Listening...' : '') }}
-      />
-      <div className="clip-edit-hint">Click to edit transcript</div>
+      {clip.isCorrecting ? (
+        <div className="clip-correcting">
+          <svg viewBox="0 0 16 16" fill="none" className="clip-correcting-spin">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" strokeDasharray="28" strokeDashoffset="10" strokeLinecap="round"/>
+          </svg>
+          Correcting with AI…
+        </div>
+      ) : (
+        <div
+          ref={txRef}
+          className={`clip-transcript ${isLive ? 'live' : ''}`}
+          contentEditable
+          suppressContentEditableWarning
+          onBlur={handleTranscriptBlur}
+          dangerouslySetInnerHTML={{ __html: clip.transcript || (isLive ? 'Listening...' : '') }}
+        />
+      )}
+      <div className="clip-edit-hint">{clip.isCorrecting ? '' : 'Click to edit transcript'}</div>
     </div>
   )
 }

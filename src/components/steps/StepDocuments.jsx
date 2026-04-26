@@ -13,11 +13,11 @@ function FileItem({ f, onRemove }) {
       <div className="fi-left">
         <span className={`ft ${FT_CLASS[f.ftype] || 'ft-txt'}`}>{f.ftype.toUpperCase()}</span>
         <div>
-          <div className="fi-name">{f.name}</div>
-          <div className={`fi-status ${f.status}`}>{statusLabel}</div>
+          <div className="fname">{f.name}</div>
+          <div className={`fstat ${f.status}`}>{statusLabel}</div>
         </div>
       </div>
-      <span className="fi-rm" onClick={onRemove}>
+      <span className="frm" onClick={onRemove} title="Remove file">
         <svg viewBox="0 0 9 9"><path d="M1.5 1.5l6 6M7.5 1.5l-6 6" strokeLinecap="round"/></svg>
       </span>
     </div>
@@ -92,18 +92,23 @@ export default function StepDocuments({ active }) {
             <div className="file-list">{tFiles.map((f, i) => <FileItem key={i} f={f} onRemove={removeTFile} />)}</div>
           </div>
 
-          <div className="doc-card">
+          <div className="doc-card doc-card-opt">
             <div className="doc-card-hdr">
               <div className="doc-card-title">Supporting documents</div>
               <span className="badge b-opt">Optional</span>
             </div>
-            <div className="doc-card-desc">Previous labs, imaging, earlier ambuláns laps.</div>
+            <div className="doc-card-desc">
+              CT, labor, korábbi ambuláns lap, képalkotó lelet — bármi ami segít kitölteni a sablont.
+              <span className="doc-skip-hint"> Nem szükséges a folytatáshoz.</span>
+            </div>
             <DropZone id="pz" inputId="p-in" accept=".pdf,.jpg,.jpeg,.png,.bmp,.tiff,.tif,.txt" multiple filled={pFiles.length > 0} onFiles={handleSupportFiles}>
               <div className="dz-icon"><svg viewBox="0 0 12 12"><path d="M6 1v6M3.5 4.5L6 7l2.5-2.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 9v1.5h10V9" strokeLinecap="round"/></svg></div>
               <div className="dz-text">Drop or click to upload</div>
-              <div className="dz-sub">PDF, JPG, PNG, BMP, TIFF, TXT</div>
+              <div className="dz-sub">PDF, JPG, PNG, BMP, TIFF, TXT · többet is lehet egyszerre</div>
             </DropZone>
-            <div className="file-list">{pFiles.map((f, i) => <FileItem key={i} f={f} onRemove={() => removePFile(i)} />)}</div>
+            {pFiles.length > 0 && (
+              <div className="file-list">{pFiles.map((f, i) => <FileItem key={i} f={f} onRemove={() => removePFile(i)} />)}</div>
+            )}
           </div>
         </div>
 

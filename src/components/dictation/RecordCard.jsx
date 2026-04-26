@@ -2,6 +2,7 @@ import { useRef, useEffect, useCallback } from 'react'
 import useStore from '../../store'
 import { CATS } from '../../constants.jsx'
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition'
+import { correctTranscript } from '../../utils/api'
 import LiveSections from './LiveSections'
 
 export default function RecordCard() {
@@ -65,14 +66,23 @@ export default function RecordCard() {
     }, 1000)
   }, [currentCat, addClip, setActiveClipId, setIsRec, setSecs, updateClip, startSR])
 
-  const stopRec = useCallback(() => {
+  const stopRec = useCallback(async () => {
+    const clipId = activeIdRef.current
     stopSR()
     if (mediaRecRef.current?.state !== 'inactive') mediaRecRef.current?.stop()
     clearInterval(timerRef.current)
     setIsRec(false)
     setActiveClipId(null)
     activeIdRef.current = null
-  }, [stopSR, setIsRec, setActiveClipId])
+
+    if (!clipId) return
+    const rawText = useStore.getState().clips.find((c) => c.id === clipId)?.transcript || ''
+    if (rawText.trim().length < 8) return
+
+    updateClip(clipId, { isCorrecting: true })
+    const corrected = await correctTranscript(rawText)
+    updateClip(clipId, { transcript: corrected, isCorrecting: false })
+  }, [stopSR, setIsRec, setActiveClipId, updateClip])
 
   useEffect(() => () => clearInterval(timerRef.current), [])
 

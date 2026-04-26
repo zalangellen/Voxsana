@@ -71,6 +71,37 @@ export async function applyVoiceCorrection({ instruction, fields, specialty }) {
   return callClaude(sysP, userMsg, 500)
 }
 
+export async function correctTranscript(rawText) {
+  if (!rawText?.trim() || rawText.trim().length < 8) return rawText
+  const sysP = `You are a medical transcription corrector. The input was produced by browser speech recognition (Web Speech API) and may contain errors — especially in medical terminology, drug names, Hungarian words, numbers, and proper nouns.
+
+Fix ONLY clear speech recognition mistakes. Rules:
+- Preserve the original language (Hungarian or mixed Hungarian/Latin/English)
+- Do not add, remove, or change any medical information
+- Do not translate anything
+- Do not add punctuation that was not implied by the speech
+- If a word sounds like a medical term, prefer the medical spelling (e.g. "hipertónia" not "hipper tónia")
+
+Return ONLY the corrected transcript text, nothing else.`
+
+  try {
+    const r = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 400,
+        system: sysP,
+        messages: [{ role: 'user', content: rawText }],
+      }),
+    })
+    const data = await r.json()
+    return data?.content?.[0]?.text?.trim() || rawText
+  } catch {
+    return rawText
+  }
+}
+
 export async function extractDocValues(docContent) {
   const sysP = `You are a medical document parser. Extract ONLY explicitly stated values from the provided documents. Do NOT interpret or infer. Return JSON: {"extracted":[{"key":"Value name","value":"Exact value","source":"filename"},...]}. Focus on: lab values, vital signs, dates, medications, diagnoses, numeric measurements. Maximum 12 items.`
   return callClaude(sysP, `Extract explicit values from these documents:\n\n${docContent.substring(0, 3000)}`, 600)
