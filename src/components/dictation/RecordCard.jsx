@@ -142,6 +142,17 @@ export default function RecordCard() {
           ))}
         </div>
       </div>
+
+      <div className="save-card">
+        <div className="save-card-text">
+          <span className="save-card-hl">Save up to 70% of<br />your documentation time</span>
+          <span className="save-card-sub">Focus on what matters most: your patients.</span>
+        </div>
+        <svg className="save-chart" viewBox="0 0 80 36" fill="none">
+          <polyline points="0,32 14,24 28,28 42,14 56,18 68,6 80,10" stroke="rgba(99,179,237,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          <polyline points="0,32 14,24 28,28 42,14 56,18 68,6 80,10 80,36 0,36" fill="rgba(99,179,237,0.12)"/>
+        </svg>
+      </div>
     </div>
   )
 }

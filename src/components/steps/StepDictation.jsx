@@ -1,6 +1,7 @@
 import useStore from '../../store'
 import RecordCard from '../dictation/RecordCard'
 import ClipsPanel from '../dictation/ClipsPanel'
+import DictSidebar from '../dictation/DictSidebar'
 
 export default function StepDictation({ active }) {
   const clips = useStore((s) => s.clips)
@@ -22,6 +23,7 @@ export default function StepDictation({ active }) {
         <div className="dict-layout">
           <RecordCard />
           <ClipsPanel />
+          <DictSidebar />
         </div>
         <div className="btn-row">
           <button className="btn btn-o" onClick={() => setStep(1)}>Back</button>
