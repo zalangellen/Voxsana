@@ -826,6 +826,43 @@ input[type=file] { display: none; }
   stroke-width: 1.6; fill: none;
 }
 
+.about-team-section {
+  border-top: 1px solid var(--border);
+  padding: 48px 0 0;
+  margin-top: 8px;
+}
+.about-team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+@media (max-width: 680px) {
+  .about-team-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+.about-person {}
+.about-person-photo {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border2);
+  margin-bottom: 14px;
+  display: block;
+}
+.about-person-name {
+  font-size: 17px; font-weight: 600;
+  color: var(--text1); letter-spacing: -0.3px;
+  margin-bottom: 3px;
+}
+.about-person-role {
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--blue); margin-bottom: 14px;
+}
+.about-person-bio {
+  font-size: 14px !important; color: var(--text3) !important;
+  line-height: 1.65 !important; margin-bottom: 10px !important;
+}
+
 /* ── PROGRESS BAR ───────────────────────────────────────────── */
 .prog-track {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;

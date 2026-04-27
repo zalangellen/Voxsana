@@ -3,7 +3,7 @@ import useStore from '../store'
 const AGENTS = [
   {
     name: 'Transcriber',
-    desc: 'Receives the audio and converts the physician\'s voice to text with medical-grade accuracy. Handles multilingual input, mixed-language dictation, and the Latin and Greek terminology that standard speech recognition fails on.',
+    desc: "Receives the audio and converts the physician's voice to text with medical-grade accuracy. Handles multilingual input, mixed-language dictation, and the Latin and Greek terminology that standard speech recognition fails on.",
   },
   {
     name: 'Classifier',
@@ -11,11 +11,11 @@ const AGENTS = [
   },
   {
     name: 'Medical NLP',
-    desc: 'Receives the classified content and applies specialty-specific clinical intelligence. Colloquial language is converted to correct medical terminology. Diagnoses are mapped to ICD-10 codes — the international standard that operates identically across every market Voxana enters.',
+    desc: "Receives the classified content and applies specialty-specific clinical intelligence. Colloquial language is converted to correct medical terminology. Diagnoses are mapped to ICD-10 codes — the international standard that operates identically across every market Voxana enters.",
   },
   {
     name: 'Structurer',
-    desc: 'Receives the processed clinical content alongside any uploaded supporting documents — lab results, imaging reports, previous records — and fills the physician\'s own template. Only explicitly verified information is used. Every filled field is tagged with its exact source. Fields that cannot be confirmed are left blank.',
+    desc: "Receives the processed clinical content alongside any uploaded supporting documents — lab results, imaging reports, previous records — and fills the physician's own template. Only explicitly verified information is used. Every filled field is tagged with its exact source. Fields that cannot be confirmed are left blank.",
   },
   {
     name: 'Validator',
@@ -23,7 +23,30 @@ const AGENTS = [
   },
   {
     name: 'Summarizer',
-    desc: 'Produces the final approved document in the physician\'s chosen format — structured text, PDF, or clipboard-ready output compatible with existing practice management and EHR systems.',
+    desc: "Produces the final approved document in the physician's chosen format — structured text, PDF, or clipboard-ready output compatible with existing practice management and EHR systems.",
+  },
+]
+
+const TEAM = [
+  {
+    photo: '/team-zalan.jpg',
+    name: 'Zalán Gellén',
+    role: 'Co-founder',
+    bio: [
+      "Zalán Gellén is a student at Corvinus University of Budapest, where he studies International Business in English with a focus on globally scalable ventures. He has a strong interest in startups and innovation, and has gained experience within one of Hungary's leading startup environments, including Diverzum.",
+      "Growing up in a family of physicians, he developed an early understanding of both the clinical and administrative realities of healthcare. While his parents' dedication to patient care set a strong example, he also witnessed the significant burden that documentation places on physicians.",
+      'This experience led to the creation of Voxana — a solution designed to reduce administrative workload through structured clinical documentation, enabling physicians to focus more on patient care while maintaining accuracy and control.',
+    ],
+  },
+  {
+    photo: '/team-david.jpg',
+    name: 'Dávid Levente Báló',
+    role: 'Co-founder',
+    bio: [
+      "Dávid Levente Báló is a student at Corvinus University of Budapest, where he studies International Business. He has a strong interest in strategy, data-driven business development and innovation, with experience in European supply chain planning at Henkel and product development as Lead Product Developer of EduVenture.",
+      "Having known Zalán since elementary school, later attending the same high school and now studying the same field at university, he brings a long-standing personal connection and shared entrepreneurial mindset to Voxana. Their friendship has grown alongside a mutual interest in building scalable solutions to meaningful problems.",
+      "Through his analytical background, startup experience and interest in structured systems, Dávid contributes a business-focused perspective to Voxana's mission: reducing physicians' administrative workload through efficient, accurate and structured clinical documentation, allowing them to focus more on patient care.",
+    ],
   },
 ]
 
@@ -48,8 +71,9 @@ export default function StepAbout({ active }) {
       </div>
 
       <div className="about-body">
-        <div className="about-content">
 
+        {/* ── Mission & pipeline ─────────────────────────────── */}
+        <div className="about-content">
           <p className="about-lead">
             Today, physicians spend 35–50% of their working day on documentation. Primary care
             physicians dedicate approximately 3 hours per day to clinical notes alone, often
@@ -127,14 +151,37 @@ export default function StepAbout({ active }) {
             </div>
           </div>
 
-          <p>
-            The documentation problem is the same in every country.
-          </p>
+          <p>The documentation problem is the same in every country.</p>
+        </div>
 
+        {/* ── Team ───────────────────────────────────────────── */}
+        <div className="about-team-section">
+          <div className="about-content">
+            <div className="about-eyebrow" style={{ marginBottom: 28 }}>The team</div>
+            <div className="about-team-grid">
+              {TEAM.map((person) => (
+                <div className="about-person" key={person.name}>
+                  <img
+                    className="about-person-photo"
+                    src={person.photo}
+                    alt={person.name}
+                  />
+                  <div className="about-person-name">{person.name}</div>
+                  <div className="about-person-role">{person.role}</div>
+                  {person.bio.map((para, i) => (
+                    <p className="about-person-bio" key={i}>{para}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Closing ────────────────────────────────────────── */}
+        <div className="about-content" style={{ paddingTop: 0 }}>
           <div className="about-closing">
             Less time on documentation. More time where it matters most.
           </div>
-
           <div className="about-cta-row">
             <button className="btn btn-p about-cta-btn" onClick={handleStart}>
               Get started
@@ -144,8 +191,8 @@ export default function StepAbout({ active }) {
               </svg>
             </button>
           </div>
-
         </div>
+
       </div>
     </div>
   )
